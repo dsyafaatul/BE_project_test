@@ -24,7 +24,8 @@ route.post('/', auth, async (req, res) => {
             terminalId: req.body.terminalId,
         })
     }catch(e){
-        return res.status(400).json({message: e.errors?.[0]?.message})
+        console.log(e)
+        return res.status(400).json({message: e.name === 'SequelizeForeignKeyConstraintError' ? 'Input tidak valid' : e.errors?.[0]?.message})
     }
     res.status(200).json({message: 'Success'})
 })
@@ -41,7 +42,7 @@ route.put('/', auth, async (req, res) => {
             }
         })
     }catch(e){
-        return res.status(400).json({message: e.errors?.[0]?.message})
+        return res.status(400).json({message: e.name === 'SequelizeForeignKeyConstraintError' ? 'Input tidak valid' : e.errors?.[0]?.message})
     }
     res.status(200).json({message: 'Success'})
 })

@@ -17,7 +17,13 @@ module.exports = {
         type: Sequelize.STRING
       },
       terminalId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'terminals',
+          key: 'terminalId'
+        },
+        onDelete: 'RESTRICT',
+        onUpdate: 'CASCADE'
       },
       createdAt: {
         allowNull: false,
