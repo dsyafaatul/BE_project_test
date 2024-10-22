@@ -25,5 +25,11 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'announceVessel',
   });
+
+  const Terminal = require('./terminal')(sequelize, DataTypes)
+  announceVessel.belongsTo(Terminal, {
+    foreignKey: 'terminalId',
+  })
+
   return announceVessel;
 };
