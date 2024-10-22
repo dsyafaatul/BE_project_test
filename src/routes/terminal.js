@@ -10,22 +10,30 @@ route.get('/', auth, async (req, res) => {
 })
 
 route.post('/', auth, async (req, res) => {
-    await Terminal.create({
-        terminalCode: req.body.terminalCode,
-        terminalName: req.body.terminalName,
-    })
+    try{
+        await Terminal.create({
+            terminalCode: req.body.terminalCode,
+            terminalName: req.body.terminalName,
+        })
+    }catch(e){
+        return res.status(400).json({message: e.errors?.[0]?.message})
+    }
     res.status(200).json({message: 'Success'})
 })
 
 route.put('/', auth, async (req, res) => {
-    await Terminal.update({
-        terminalCode: req.body.terminalCode,
-        terminalName: req.body.terminalName,
-    }, {
-        where: {
-            terminalId: req.body.terminalId,
-        }
-    })
+    try{
+        await Terminal.update({
+            terminalCode: req.body.terminalCode,
+            terminalName: req.body.terminalName,
+        }, {
+            where: {
+                terminalId: req.body.terminalId,
+            }
+        })
+    }catch(e){
+        return res.status(400).json({message: e.errors?.[0]?.message})
+    }
     res.status(200).json({message: 'Success'})
 })
 

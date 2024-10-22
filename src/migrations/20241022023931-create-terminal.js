@@ -10,7 +10,8 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       terminalCode: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        unique: true
       },
       terminalName: {
         type: Sequelize.STRING

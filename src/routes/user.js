@@ -17,24 +17,32 @@ route.get('/', auth, async (req, res) => {
 })
 
 route.post('/', auth, async (req, res) => {
-    await User.create({
-        username: req.body.username,
-        password: bcrypt.hashSync(req.body.password),
-        terminalId: req.body.terminalId,
-    })
+    try{
+        await User.create({
+            username: req.body.username,
+            password: bcrypt.hashSync(req.body.password),
+            terminalId: req.body.terminalId,
+        })
+    }catch(e){
+        return res.status(400).json({message: e.errors?.[0]?.message})
+    }
     res.status(200).json({message: 'Success'})
 })
 
 route.put('/', auth, async (req, res) => {
-    await User.update({
-        username: req.body.username,
-        password: bcrypt.hashSync(req.body.password),
-        terminalId: req.body.terminalId,
-    }, {
-        where: {
-            userId: req.body.userId,
-        }
-    })
+    try{
+        await User.update({
+            username: req.body.username,
+            password: bcrypt.hashSync(req.body.password),
+            terminalId: req.body.terminalId,
+        }, {
+            where: {
+                userId: req.body.userId,
+            }
+        })
+    }catch(e){
+        return res.status(400).json({message: e.errors?.[0]?.message})
+    }
     res.status(200).json({message: 'Success'})
 })
 

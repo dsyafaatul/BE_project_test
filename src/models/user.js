@@ -18,7 +18,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       primaryKey: true
     },
-    username: DataTypes.STRING,
+    username: {
+      type: DataTypes.STRING,
+      unique: {
+        msg: 'Username harus unik'
+      }
+    },
     password: DataTypes.STRING,
     terminalId: DataTypes.INTEGER
   }, {

@@ -18,7 +18,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       primaryKey: true
     },
-    announceCode: DataTypes.STRING,
+    announceCode: {
+      type: DataTypes.STRING,
+      unique: {
+        msg: 'Username harus unik'
+      }
+    },
     announceVessel: DataTypes.STRING,
     terminalId: DataTypes.INTEGER
   }, {

@@ -18,7 +18,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       primaryKey: true
     },
-    terminalCode: DataTypes.STRING,
+    terminalCode: {
+      type: DataTypes.STRING,
+      unique: {
+        msg: 'Username harus unik'
+      }
+    },
     terminalName: DataTypes.STRING
   }, {
     sequelize,

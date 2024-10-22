@@ -10,7 +10,8 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       announceCode: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        unique: true
       },
       announceVessel: {
         type: Sequelize.STRING

@@ -24,24 +24,32 @@ route.get('/', auth, async (req, res) => {
 })
 
 route.post('/', auth, async (req, res) => {
-    await AnnounceVessel.create({
-        announceCode: req.body.announceCode,
-        announceVessel: req.body.announceVessel,
-        terminalId: req.body.terminalId,
-    })
+    try{
+        await AnnounceVessel.create({
+            announceCode: req.body.announceCode,
+            announceVessel: req.body.announceVessel,
+            terminalId: req.body.terminalId,
+        })
+    }catch(e){
+        return res.status(400).json({message: e.errors?.[0]?.message})
+    }
     res.status(200).json({message: 'Success'})
 })
 
 route.put('/', auth, async (req, res) => {
-    await AnnounceVessel.update({
-        announceCode: req.body.announceCode,
-        announceVessel: req.body.announceVessel,
-        terminalId: req.body.terminalId,
-    }, {
-        where: {
-            announceId: req.body.announceId,
-        }
-    })
+    try{
+        await AnnounceVessel.update({
+            announceCode: req.body.announceCode,
+            announceVessel: req.body.announceVessel,
+            terminalId: req.body.terminalId,
+        }, {
+            where: {
+                announceId: req.body.announceId,
+            }
+        })
+    }catch(e){
+        return res.status(400).json({message: e.errors?.[0]?.message})
+    }
     res.status(200).json({message: 'Success'})
 })
 
