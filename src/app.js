@@ -29,6 +29,12 @@ app.use((req, res) => {
 app.use((error, req, res, next) => {
     if(process.env.NODE_ENV === 'development') console.log(error)
     if(error.name === 'SequelizeForeignKeyConstraintError'){
+        if(error.original.errno === 1451){
+            return res.status(400).json({message: 'Tidak dapat menghapus atau mengubah data'})
+        }
+        if(error.original.errno === 1452){
+            return res.status(400).json({message: 'Tidak dapat menambahkan data'})
+        }
         return res.status(400).json({message: 'Input tidak valid'})
     }else if(error.errors){
         return res.status(400).json({message: error.errors?.[0]?.message})
