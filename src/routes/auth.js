@@ -10,7 +10,7 @@ const safe = require('../utils/safe.util')
 route.post('/login', async (req, res, next) => {
     const [error, user] = await safe(() => User.findOne({
         where: {
-            username: req.body.username
+            username: req.body.username || ''
         }
     }))
     if(error) next(error)

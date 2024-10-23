@@ -27,7 +27,7 @@ route.put('/', auth, async (req, res, next) => {
         terminalName: req.body.terminalName,
     }, {
         where: {
-            terminalId: req.body.terminalId,
+            terminalId: req.body.terminalId || '',
         }
     }))
     if(error) return next(error)
@@ -37,7 +37,7 @@ route.put('/', auth, async (req, res, next) => {
 route.delete('/', auth, async (req, res, next) => {
     const [error, data] = await safe(() => Terminal.destroy({
         where: {
-            terminalId: req.body.terminalId,
+            terminalId: req.body.terminalId || '',
         }
     }))
     if(error) return next(error)

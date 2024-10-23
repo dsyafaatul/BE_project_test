@@ -11,7 +11,7 @@ route.get('/', auth, async (req, res, next) => {
     const [error, data] = await safe(() => User.findAll({
         where: {
             userId: {
-                [Op.ne]: req.user.userId
+                [Op.ne]: req.user.userId || ''
             }
         }
     }))
@@ -36,7 +36,7 @@ route.put('/', auth, async (req, res, next) => {
         terminalId: req.body.terminalId,
     }, {
         where: {
-            userId: req.body.userId,
+            userId: req.body.userId || '',
         }
     }))
     if(error) return next(error)
@@ -48,11 +48,11 @@ route.delete('/', auth, async (req, res, next) => {
         where: {
             [Op.and]: [
                 {
-                    userId: req.body.userId,
+                    userId: req.body.userId || '',
                 },
                 {
                     userId: {
-                        [Op.ne]: req.user.userId
+                        [Op.ne]: req.user.userId || ''
                     }
                 }
             ]

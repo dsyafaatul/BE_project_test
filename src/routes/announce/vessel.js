@@ -43,7 +43,7 @@ route.put('/', auth, async (req, res, next) => {
         terminalId: req.body.terminalId,
     }, {
         where: {
-            announceId: req.body.announceId,
+            announceId: req.body.announceId || '',
         }
     }))
     if(error) return next(error)
@@ -53,7 +53,7 @@ route.put('/', auth, async (req, res, next) => {
 route.delete('/', auth, async (req, res, next) => {
     const [error, data] = await safe(() => AnnounceVessel.destroy({
         where: {
-            announceId: req.body.announceId,
+            announceId: req.body.announceId || '',
         }
     }))
     if(error) return next(error)
