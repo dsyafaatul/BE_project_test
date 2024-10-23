@@ -7,7 +7,13 @@ const auth = require('./routes/auth')
 const user = require('./routes/user')
 const terminal = require('./routes/terminal')
 const announceVessel = require('./routes/announce/vessel')
+const cors = require('cors')
 
+app.use(cors({
+    origin: [
+        'http://localhost:5173'
+    ]
+}))
 app.use(express.json())
 app.use(cookieParser(process.env.SECRET_KEY))
 
@@ -25,6 +31,7 @@ app.use((error, req, res, next) => {
     }else if(error.errors){
         return res.status(400).json({message: error.errors?.[0]?.message})
     }
+    if(process.env.NODE_ENV === 'development') console.log(error)
     res.status(500).json({message: 'Internal Server Error'})
 })
 
