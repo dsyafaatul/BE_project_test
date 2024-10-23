@@ -6,17 +6,28 @@ const sequelize = require('../configs/database.connection')
 const User = require('../models/user')(sequelize, DataTypes)
 const bcrypt = require('bcryptjs')
 const safe = require('../utils/safe.util')
+const Terminal = require('../models/terminal')(sequelize, DataTypes)
 
 route.get('/', auth, async (req, res, next) => {
     const [error, data] = await safe(() => User.findAll({
         attributes: {
-            exclude: ['password']
+            exclude: ['password'],
+            include: [
+                [sequelize.col('terminalCode'), 'terminalCode'],
+                [sequelize.col('terminalName'), 'terminalName']
+            ]
         },
         where: {
             userId: {
                 [Op.ne]: req.user.userId || ''
             }
-        }
+        },
+        include: [
+            {
+                model: Terminal,
+                attributes: [],
+            }
+        ],
     }))
     if(error) return next(error)
     res.status(200).json(data)

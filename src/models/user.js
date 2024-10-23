@@ -30,5 +30,9 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName: 'user',
   });
+  const Terminal = require('./terminal')(sequelize, DataTypes)
+  user.belongsTo(Terminal, {
+    foreignKey: 'terminalId'
+  })
   return user;
 };
