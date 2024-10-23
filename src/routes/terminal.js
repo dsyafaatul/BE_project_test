@@ -7,7 +7,22 @@ const safe = require('../utils/safe.util')
 const Terminal = require('../models/terminal')(sequelize, DataTypes)
 
 route.get('/', auth, async (req, res, next) => {
-    const [error, data] = await safe(() => Terminal.findAll())
+    const [error, data] = await safe(() => Terminal.findAll({
+        where: {
+            [Op.or]: [
+                {
+                    terminalCode: {
+                        [Op.substring]: req.query.q || ''
+                    },
+                },
+                {
+                    terminalName: {
+                        [Op.substring]: req.query.q || ''
+                    },
+                }
+            ]
+        }
+    }))
     if(error) return next(error)
     res.status(200).json(data)
 })
