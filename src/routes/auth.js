@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs')
 const jose = require('jose')
 const safe = require('../utils/safe.util')
 
-route.post('/', async (req, res, next) => {
+route.post('/login', async (req, res, next) => {
     const [error, user] = await safe(() => User.findOne({
         where: {
             username: req.body.username
