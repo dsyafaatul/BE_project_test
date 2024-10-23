@@ -6,6 +6,7 @@ const User = require('../models/user')(sequelize, DataTypes)
 const bcrypt = require('bcryptjs')
 const jose = require('jose')
 const safe = require('../utils/safe.util')
+const auth = require('../middlewares/auth.middleware')
 
 route.post('/login', async (req, res, next) => {
     const [error, user] = await safe(() => User.findOne({
@@ -38,6 +39,10 @@ route.post('/login', async (req, res, next) => {
         sameSite: true,
         path: '/',
     }).json({message: 'Success'})
+})
+
+route.get('/', auth, (req, res) => {
+    res.status(200).json({message: 'Success'})
 })
 
 module.exports = route
