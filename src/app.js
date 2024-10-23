@@ -20,6 +20,11 @@ app.use((req, res) => {
     res.status(404).json({message: 'Not Found'})
 })
 app.use((error, req, res, next) => {
+    if(error.name === 'SequelizeForeignKeyConstraintError'){
+        return res.status(400).json({message: 'Input tidak valid'})
+    }else if(error.errors){
+        return res.status(400).json({message: error.errors?.[0]?.message})
+    }
     res.status(500).json({message: 'Internal Server Error'})
 })
 
