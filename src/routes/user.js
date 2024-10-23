@@ -9,6 +9,9 @@ const safe = require('../utils/safe.util')
 
 route.get('/', auth, async (req, res, next) => {
     const [error, data] = await safe(() => User.findAll({
+        attributes: {
+            exclude: ['password']
+        },
         where: {
             userId: {
                 [Op.ne]: req.user.userId || ''
