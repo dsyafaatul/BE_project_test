@@ -15,6 +15,25 @@ route.get('/', auth, async (req, res, next) => {
                 [sequelize.col('terminalName'), 'terminalName']
             ]
         },
+        where: {
+            [Op.or]: [
+                {
+                    announceCode: {
+                        [Op.substring]: req.query.q || ''
+                    },
+                },
+                {
+                    announceVessel: {
+                        [Op.substring]: req.query.q || ''
+                    },
+                },
+                {
+                    '$terminalName$': {
+                        [Op.substring]: req.query.q || ''
+                    },
+                }
+            ]
+        },
         include: [
             {
                 model: Terminal,
