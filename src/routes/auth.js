@@ -45,4 +45,9 @@ route.get('/', auth, (req, res) => {
     res.status(200).json({message: 'Success'})
 })
 
+route.delete('/logout', (req, res) => {
+    res.clearCookie('token')
+    res.status(200).json({message: 'Success'})
+})
+
 module.exports = route
