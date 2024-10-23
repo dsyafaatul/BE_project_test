@@ -20,7 +20,19 @@ route.get('/', auth, async (req, res, next) => {
         where: {
             userId: {
                 [Op.ne]: req.user.userId || ''
-            }
+            },
+            [Op.or]: [
+                {
+                    username: {
+                        [Op.substring]: req.query.q || ''
+                    },
+                },
+                {
+                    '$terminalName$': {
+                        [Op.substring]: req.query.q || ''
+                    }
+                }
+            ]
         },
         include: [
             {
