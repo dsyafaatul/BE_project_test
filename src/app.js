@@ -39,7 +39,7 @@ app.use((error, req, res, next) => {
     }else if(error.errors){
         return res.status(400).json({message: error.errors?.[0]?.message})
     }
-    res.status(500).json({message: 'Internal Server Error'})
+    res.status(500).json({message: error.message ?? 'Internal Server Error'})
 })
 
 app.listen(process.env.PORT)
