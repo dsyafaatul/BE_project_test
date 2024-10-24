@@ -42,7 +42,7 @@ route.post('/login', async (req, res, next) => {
 })
 
 route.get('/', auth, (req, res) => {
-    res.status(200).json({message: 'Success'})
+    res.status(200).json({message: 'Success', data: req.user})
 })
 
 route.delete('/logout', (req, res) => {
