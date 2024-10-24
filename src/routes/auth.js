@@ -17,9 +17,8 @@ route.post('/login', async (req, res, next) => {
         include: Terminal
     }))
     if(error) next(error)
-    if(!user) return next('router')
-    if(!bcrypt.compareSync(req.body.password, user.password)){
-        return res.status(401).json({message: 'Unauthorized'})
+    if(!user || !bcrypt.compareSync(req.body.password, user.password)){
+        return res.status(401).json({message: 'Username or Password is wrong'})
     }
 
     const data = {
