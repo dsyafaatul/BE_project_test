@@ -7,12 +7,14 @@ const bcrypt = require('bcryptjs')
 const jose = require('jose')
 const safe = require('../utils/safe.util')
 const auth = require('../middlewares/auth.middleware')
+const Terminal = require('../models/terminal')(sequelize, DataTypes)
 
 route.post('/login', async (req, res, next) => {
     const [error, user] = await safe(() => User.findOne({
         where: {
             username: req.body.username || ''
-        }
+        },
+        include: Terminal
     }))
     if(error) next(error)
     if(!user) return next('router')
@@ -24,7 +26,8 @@ route.post('/login', async (req, res, next) => {
         userId: user.userId,
         username: user.username,
         terminalId: user.terminalId,
-        role: user.role
+        terminalName: user.terminal.terminalName,
+        role: user.role,
     }
     const [errorJWT, token] = await safe(() => new jose.SignJWT(data).setProtectedHeader({
         alg: 'HS256'
