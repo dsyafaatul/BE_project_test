@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const route = Router()
-const {DataTypes} = require('sequelize')
+const {DataTypes, Op} = require('sequelize')
 const sequelize = require('../configs/database.connection')
 const User = require('../models/user')(sequelize, DataTypes)
 const bcrypt = require('bcryptjs')
@@ -10,14 +10,23 @@ const auth = require('../middlewares/auth.middleware')
 const Terminal = require('../models/terminal')(sequelize, DataTypes)
 
 route.post('/login', async (req, res, next) => {
+    const [errorCekUser, cekUser] = await safe(() => User.findOne({
+        where: {
+            username: req.body.username || '',
+        },
+        include: Terminal
+    }))
+    if(!cekUser) return res.status(401).json({message: 'Username or Password is wrong'})
     const [error, user] = await safe(() => User.findOne({
         where: {
-            username: req.body.username || ''
+            username: req.body.username || '',
+            terminalId: req.body.terminalId
         },
         include: Terminal
     }))
     if(error) next(error)
-    if(!user || !bcrypt.compareSync(req.body.password, user.password)){
+    if(!user) return res.status(401).json({message: 'Terminal anda salah'})
+    if(!bcrypt.compareSync(req.body.password, user.password)){
         return res.status(401).json({message: 'Username or Password is wrong'})
     }
 
@@ -50,6 +59,27 @@ route.get('/', auth, (req, res) => {
 route.delete('/logout', (req, res) => {
     res.clearCookie('token')
     res.status(200).json({message: 'Success'})
+})
+
+route.get('/terminal', async (req, res, next) => {
+    const [error, data] = await safe(() => Terminal.findAll({
+        where: {
+            [Op.or]: [
+                {
+                    terminalCode: {
+                        [Op.substring]: req.query.q || ''
+                    },
+                },
+                {
+                    terminalName: {
+                        [Op.substring]: req.query.q || ''
+                    },
+                }
+            ]
+        }
+    }))
+    if(error) return next(error)
+    res.status(200).json(data)
 })
 
 module.exports = route
