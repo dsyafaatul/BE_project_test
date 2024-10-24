@@ -29,6 +29,11 @@ route.get('/', auth, async (req, res, next) => {
                     },
                 },
                 {
+                    voyage: {
+                        [Op.substring]: req.query.q || ''
+                    },
+                },
+                {
                     '$terminalName$': {
                         [Op.substring]: req.query.q || ''
                     },
@@ -50,6 +55,7 @@ route.post('/', auth, async (req, res, next) => {
     const [error, data] = await safe(() => AnnounceVessel.create({
         announceCode: req.body.announceCode,
         announceVessel: req.body.announceVessel,
+        voyage: req.body.voyage,
         terminalId: req.body.terminalId,
     }))
     if(error) return next(error)
@@ -60,6 +66,7 @@ route.put('/', auth, async (req, res, next) => {
     const [error, data] = await safe(() => AnnounceVessel.update({
         announceCode: req.body.announceCode,
         announceVessel: req.body.announceVessel,
+        voyage: req.body.voyage,
         terminalId: req.body.terminalId,
     }, {
         where: {
@@ -98,6 +105,11 @@ route.get('/excel', async (req, res, next) => {
         {
             header: 'Announce Vessel',
             key: 'announceVessel',
+            width: 20
+        },
+        {
+            header: 'Voyage',
+            key: 'voyage',
             width: 20
         },
         {

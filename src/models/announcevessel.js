@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     announceVessel: DataTypes.STRING,
+    voyage: DataTypes.STRING,
     terminalId: DataTypes.INTEGER
   }, {
     sequelize,
