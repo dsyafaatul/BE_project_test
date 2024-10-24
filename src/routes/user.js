@@ -58,7 +58,7 @@ route.post('/', auth, async (req, res, next) => {
 route.put('/', auth, async (req, res, next) => {
     const [error, data] = await safe(() => User.update({
         username: req.body.username,
-        password: bcrypt.hashSync(req.body.password),
+        ...(req.body.password ? {password: bcrypt.hashSync(req.body.password)}  : {}),
         terminalId: req.body.terminalId,
     }, {
         where: {
