@@ -7,6 +7,7 @@ const User = require('../models/user')(sequelize, DataTypes)
 const bcrypt = require('bcryptjs')
 const safe = require('../utils/safe.util')
 const Terminal = require('../models/terminal')(sequelize, DataTypes)
+const Excel = require('exceljs')
 
 route.get('/', auth, async (req, res, next) => {
     const [error, data] = await safe(() => User.findAll({
@@ -86,6 +87,57 @@ route.delete('/', auth, async (req, res, next) => {
     }))
     if(error) return next(error)
     res.status(200).json({message: 'Success'})
+})
+
+route.get('/excel', async (req, res, next) => {
+    const workbook = new Excel.Workbook()
+    const sheet = workbook.addWorksheet('Sheet1')
+
+    sheet.columns = [
+        {
+            header: 'No',
+            key: 'number',
+            width: 5
+        },
+        {
+            header: 'Username',
+            key: 'username',
+            width: 20
+        },
+        {
+            header: 'Terminal Name',
+            key: 'terminal.terminalName',
+            width: 20
+        }
+    ]
+    try{
+        const data = await User.findAll({
+            attributes: {
+                exclude: 'password'
+            },
+            include: Terminal,
+            raw: true
+        })
+        data.forEach((row, number) => {
+            const newRow = sheet.addRow({number: number+1, ...row})
+            newRow.eachCell(cell => {
+                cell.border = {
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    right: { style: 'thin' }
+                }
+            })
+        })
+    }catch(error){
+        next(error)
+    }
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.setHeader('Content-Disposition', `attachment; filename=User-${new Date().getTime()}.xlsx`);
+
+    await workbook.xlsx.write(res)
+    res.end()
 })
 
 module.exports = route
