@@ -85,20 +85,25 @@ route.get('/excel', async (req, res, next) => {
         const data = await Terminal.findAll({
             raw: true
         })
-        data.forEach((row, number) => {
-            const newRow = sheet.addRow({number: number+1, ...row})
-            newRow.eachCell(cell => {
-                cell.border = {
-                    top: { style: 'thin' },
-                    left: { style: 'thin' },
-                    bottom: { style: 'thin' },
-                    right: { style: 'thin' }
-                }
-            })
-        })
+        sheet.addRows(data.map((row, index) => {
+            row.number = index+1
+            return row
+        }))
     }catch(error){
         next(error)
     }
+
+    const borderThin = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' }
+    }
+    sheet.eachRow((row, number) => {
+        row.eachCell(cell => {
+            cell.border = borderThin
+        })
+    })
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     res.setHeader('Content-Disposition', `attachment; filename=Terminal-${new Date().getTime()}.xlsx`);
